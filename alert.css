@@ -1,0 +1,16 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    background: url(11.webp);
+    background-repeat: no-repeat;
+background-size: cover;
+
+}
+h1{
+    margin-bottom: 40px;
+    color: rgb(181, 126, 126);
+    text-shadow: 2px 2px 2px black;
+    
+}

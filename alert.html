@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Alert with Location Detection (TDRH)</title>
+    <link rel="stylesheet" href="alert.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOM68l90fu7GiBl2B4CrxmiPj6HOcdJm/d2W5zG" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding-top: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #003366;
+            color: white;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 600px;
+            width: 100%;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        #alertInfo {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .navbar ul {
+                display: none;
+            }
+            .navbar ul.active {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                background-color: #333;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                padding: 10px 0;
+            }
+
+            .navbar ul li {
+                margin: 10px 0;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">Thrissur Disaster Responsive Hub</div>
+        <ul>
+            
+            <li><a href="map.html"><i class="fas fa-map-marked-alt"></i> View Map</a></li>
+            <li><a href="api.html"><i class="fas fa-cloud-sun"></i> Climate</a></li>
+            <li><a href="emergency.html"><i class="fas fa-phone-alt"></i> Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Flood Alert for Your Location</h1>
+        <div id="map"></div>
+        <div id="alertInfo" style="display: none;">Loading alerts...</div>
+    </div>
+
+    <!-- Leaflet and JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([10.52, 76.21], 13);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Use geolocation
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    // Center the map
+                    map.setView([lat, lon], 13);
+                    L.marker([lat, lon]).addTo(map).bindPopup('You are here').openPopup();
+
+                    // Fetch alerts
+                    fetchFloodAlerts(lat, lon);
+                },
+                () => alert('Geolocation is not supported or denied by the user.')
+            );
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+
+        // Fetch flood alerts
+        function fetchFloodAlerts(lat, lon) {
+            const apiKey = '038923da991025f1cd9339003343346d';
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not okay');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const alertInfo = document.getElementById('alertInfo');
+                    alertInfo.style.display = 'block';
+
+                    // Simulating alerts with weather data
+                    const weather = data.weather[0].main;
+                    const description = data.weather[0].description;
+
+                    if (weather.toLowerCase().includes('rain') || description.toLowerCase().includes('flood')) {
+                        alertInfo.innerHTML = `
+                            <strong>Flood Alert:</strong> Heavy rain or potential flooding.<br><br>
+                            <strong>Details:</strong> ${description}<br>
+                            <em>Please take precautions and avoid flood-prone areas.</em>
+                        `;
+                        alertInfo.style.backgroundColor = '#ffcccc'; // Light red for alerts
+                    } else {
+                        alertInfo.innerHTML = 'No flood alerts at the moment.';
+                        alertInfo.style.backgroundColor = '#ccffcc'; // Light green for no alerts
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    const alertInfo = document.getElementById('alertInfo');
+                    alertInfo.style.display = 'block';
+                    alertInfo.innerHTML = 'Error fetching alerts. Please try again later.';
+                    alertInfo.style.backgroundColor = '#ffcccc';
+                });
+        }
+    </script>
+
+</body>
+</html>
+

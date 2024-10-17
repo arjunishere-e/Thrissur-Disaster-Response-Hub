@@ -1,0 +1,10 @@
+* , body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.navbar navbar-expand-lg bg-body-tertiary{
+    color: black;
+    font-size: medium;
+}

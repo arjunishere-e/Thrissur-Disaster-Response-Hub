@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Fetcher</title>
+    <link rel="stylesheet" href="api.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #282c34; /* Added background color */
+            color: white; /* Default text color */
+        }
+
+        #weatherInfo {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+        }
+
+        #fetchWeatherBtn {
+            background-color: #007bff; /* Button color */
+            color: white; /* Button text color */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+
+        #fetchWeatherBtn:hover {
+            background-color: #0056b3; /* Darker button on hover */
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            body {
+                margin: 10px;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            } 
+
+            #fetchWeatherBtn {
+                width: 100%;
+                padding: 15px;
+                font-size: 1em;
+            }
+
+            #weatherInfo {
+                font-size: 0.9em;
+                padding: 5px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            h2 {
+                font-size: 1.2em;
+            }
+
+            #fetchWeatherBtn {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+
+            #weatherInfo {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Weather Information for Thrissur(TDRH)</h2>
+    <button id="fetchWeatherBtn" aria-label="Get current weather">Get Weather</button>
+    <div id="weatherInfo"></div>
+
+    <script>
+        const apiKey = '038923da991025f1cd9339003343346d'; 
+
+        function fetchWeatherData() {
+            document.getElementById('weatherInfo').innerHTML = 'Loading...'; // Loading state
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=Thrissur&appid=${apiKey}&units=metric`;
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch weather data.'); // More descriptive error
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const weatherDescription = data.weather[0].description;
+                    const temperature = data.main.temp;
+                    const humidity = data.main.humidity;
+
+                    document.getElementById('weatherInfo').innerHTML = `
+                        <h3>CURRENT WEATHER IN THRISSUR:</h3>
+                        <p>Description: ${weatherDescription}</p>
+                        <p>Temperature: ${temperature} °C</p>
+                        <p>Humidity: ${humidity}%</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('weatherInfo').innerHTML = 'Error fetching weather data. Please try again later.';
+                });
+        }
+
+        document.getElementById('fetchWeatherBtn').onclick = fetchWeatherData;
+    </script>
+</body>
+</html>

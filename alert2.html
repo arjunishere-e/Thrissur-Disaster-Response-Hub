@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Alerts</title>
+    <style>
+        .alert-container {
+            background-color: #ffcccc;
+            border: 1px solid #ff0000;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: none; /* Hidden by default */
+        }
+        .alert-title {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Flood Alerts</h2>
+<div class="alert-container" id="alertContainer">
+    <div class="alert-title">Flood Alert:</div>
+    <div id="alertMessage"></div>
+</div>
+
+<script>
+    // Function to fetch flood alerts
+    function fetchFloodAlerts() {
+        // Hypothetical API endpoint for flood alerts
+        const apiUrl = 'https://api.example.com/flood-alerts'; // Replace with actual API URL
+
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not okay');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Assuming the API returns an array of alerts
+                if (data && data.length > 0) {
+                    const alertContainer = document.getElementById('alertContainer');
+                    const alertMessage = document.getElementById('alertMessage');
+
+                    // Update the alert message
+                    alertMessage.innerHTML = data.map(alert => `<p>${alert.message}</p>`).join('');
+                    alertContainer.style.display = 'block'; // Show the alert container
+                }
+            })
+            .catch(error => console.error('Error fetching flood alerts:', error));
+    }
+
+    // Call the function to fetch flood alerts on page load
+    fetchFloodAlerts();
+</script>
+
+</body>
+</html>

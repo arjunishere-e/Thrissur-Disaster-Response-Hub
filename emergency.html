@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Food and Medical Services</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(#0056b3 50% #f9f9f9 50%);
+            background-repeat: no-repeat;
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            height: 95%;
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        #map {
+            height: 200px;
+            width: 100%;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        form {
+            margin: 20px 0;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                box-shadow: none;
+            }
+
+            #map {
+                height: 250px;
+            }
+
+            input, select, button {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                height: auto;
+                padding: 10px;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            #map {
+                height: 200px;
+            }
+
+            input, select, button {
+                padding: 7px;
+                font-size: 12px;
+            }
+
+            button {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Emergency Food and Medical Services(TDRH)</h2>
+
+    <form id="requestForm" method="POST"  action="https://script.google.com/macros/s/AKfycbzpl_ESuHGGJsvs6AiBJSbON3znkr2qceNlB3uoYPHsPXs9X85dlAzJ2KckEmVi25U0/exec">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="Name" required><br>
+
+        <label for="name">Phone Number:</label>
+        <input type="number" id="phonenumber" phonenumber="phn" name="Phone Number" required><br>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="Location" placeholder="Click on map to select" required><br>
+
+        <label for="assistance">Assistance Needed:</label>
+        <select id="assistance" name="Assistance">
+            <option value="food">Food</option>
+            <option value="medical">Medical</option>
+            <option value="both">Both</option>
+        </select><br>
+
+        <label for="urgency">Urgency:</label>
+        <select id="urgency" name="Urgency">
+            <option value="low">Low</option>
+            <option value="moderate">Moderate</option>
+            <option value="critical">Critical</option>
+        </select><br>
+
+        <button type="submit">Request Assistance</button>
+    </form>
+
+    <div id="map"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    // Initialize the map
+    var map = L.map('map').setView([10.5276, 76.2144], 13); // Thrissur coordinates
+
+    // Add a tile layer (using OpenStreetMap tiles)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add a marker for selecting location
+    var marker;
+
+    // Function to get place name from coordinates using Nominatim
+    function getPlaceName(lat, lng) {
+        var url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.display_name) {
+                    document.getElementById('location').value = data.display_name;
+                    marker = L.marker([lat, lng]).addTo(map)
+                        .bindPopup("Selected Location: " + data.display_name).openPopup();
+                }
+            })
+            .catch(error => console.error('Error fetching place name:', error));
+    }
+
+    // Add click event to select location from the map
+    map.on('click', function(e) {
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+
+        getPlaceName(lat, lng); // Get the place name based on clicked coordinates
+        if (marker) {
+            map.removeLayer(marker); // Remove previous marker if it exists
+        }
+    });
+</script>
+
+</body>
+</html>
+
+
+
+
+

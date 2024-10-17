@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map(TDRH)</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <!-- Leaflet Geocoder CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <style>
+        /* Fullscreen map responsive design */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Styling for the toggleable search button */
+        #search-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background-color: white;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+
+        /* Hide the geocoder by default */
+        .leaflet-control-geocoder {
+            display: none;
+        }
+
+        /* When the geocoder is active, show it */
+        .geocoder-active .leaflet-control-geocoder {
+            display: block !important;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map"></div> <!-- Map container -->
+
+<!-- Search Button (toggles the geocoder) -->
+<div id="search-button"></div>
+
+<!-- Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Leaflet Routing Machine JavaScript -->
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<!-- Leaflet Geocoder JavaScript -->
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<!-- Leaflet Locate JavaScript (for location button) -->
+<script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+
+<script>
+    // Initialize the map centered on Thrissur
+    var map = L.map('map').setView([10.5276, 76.2144], 13);
+
+    // Add OpenStreetMap tiles (free and open-source map layer)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Create geocoder control but do NOT add it to the map initially
+    var geocoder = L.Control.geocoder({
+        defaultMarkGeocode: false
+    })
+    .on('markgeocode', function(e) {
+        var latlng = e.geocode.center;
+        L.marker(latlng).addTo(map)
+            .bindPopup(e.geocode.name).openPopup();
+        map.setView(latlng, 16); // Zoom in to the location
+    });
+
+    // Function to toggle the visibility of the geocoder
+    var isGeocoderActive = false;
+    document.getElementById('search-button').onclick = function() {
+        if (isGeocoderActive) {
+            // Hide geocoder
+            document.body.classList.remove('geocoder-active');
+            map.removeControl(geocoder);
+        } else {
+            // Show geocoder
+            document.body.classList.add('geocoder-active');
+            geocoder.addTo(map);
+        }
+        isGeocoderActive = !isGeocoderActive; // Toggle state
+    };
+
+    // Add custom markers with popups
+    var customIcon = L.icon({
+        iconUrl: 'https://example.com/path/to/icon.png', // Custom marker icon URL
+        iconSize: [30, 30], // Size of the icon
+        iconAnchor: [15, 30], // Anchor point of the icon
+        popupAnchor: [0, -30] // Popup position relative to the marker
+    });
+
+    L.marker([10.5276, 76.2144], { icon: customIcon })
+        .addTo(map)
+        .bindPopup('Welcome to Thrissur!')
+        .openPopup();
+
+    // Add routing control to the map
+    var routingControl = L.Routing.control({
+        waypoints: [
+            L.latLng(10.5276, 76.2144), // Starting point (Thrissur center)
+            L.latLng(10.566, 76.219)    // Example destination
+        ],
+        routeWhileDragging: true, // Allow user to drag the route
+        showAlternatives: true,   // Show alternative routes
+        geocoder: L.Control.Geocoder.nominatim(), // Geocoding (optional)
+        createMarker: function(i, wp) {
+            return L.marker(wp.latLng).bindPopup(i === 0 ? "You are here" : "Destination").openPopup();
+        }
+    }).addTo(map);
+
+    // Add a "locate me" button to the map
+    L.control.locate({
+        position: 'topleft',
+        strings: {
+            title: "Show me where I am"
+        },
+        drawCircle: true, // Draw a circle around user's location
+        locateOptions: {
+            enableHighAccuracy: true
+        }
+    }).addTo(map);
+
+    // Geolocation for user's current location
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var userLatLng = L.latLng(position.coords.latitude, position.coords.longitude);
+            
+            // Update the routing control with user's location as the start
+            routingControl.setWaypoints([userLatLng, L.latLng(10.566, 76.219)]);
+        });
+    }
+
+    // Make the map resize properly when the window size changes
+    window.addEventListener('resize', function() {
+        setTimeout(function() {
+            map.invalidateSize(); // Ensures the map fits the new window size
+        }, 500); // Delay to allow smooth transition
+    });
+</script>
+
+</body>
+</html>
+

@@ -1,18 +1,66 @@
+
+
+
+
+
+
+
+
+
+
+<!--new index-->
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TDRH</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <style>
         /* Navbar container styling */
+        * {
+            box-sizing: border-box;
+            /* Ensure padding and margins are included in width calculations */
+        }
+
+        body {
+            margin: 0;
+            /* Remove default margin */
+            font-family: Arial, sans-serif;
+            background: rgb(2, 0, 36);
+
+            background-color: #f0f0f0;
+            background: url(hands-pair-touch-wallpaper-preview.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            /* light gray */
+
+
+            height: 100vh;
+            /* Ensure body takes full height */
+        }
+
         .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background-color: #003366;
             padding: 10px 20px;
+            z-index: 1;
+            width: 100%;
+            /* Full width of the viewport */
+        }
+
+        /* Push page content below the navbar */
+        .content {
+            margin-top: 60px;
+            /* Space for the navbar */
         }
 
         /* Logo/brand */
@@ -89,197 +137,146 @@
             }
         }
 
-        /* Fullscreen background image */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
+        /* Button container styling */
+        .button-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            /* Button is above the scrolling images */
         }
 
-        .fullscreen-bg {
-            background-image: url(pexels-denniz-futalan-339724-942560.jpg);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            height: 100vh;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Card layout */
-        .card-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            width: 300px;
-            text-align: center;
-        }
-
-        .card img {
-            width: 100%;
-            height: auto;
-        }
-
-        .card-content {
-            padding: 15px;
-        }
-
-        .btn {
-            background-color: #333;
+        .redirect-button {
+            padding: 10px 20px;
+            font-size: 18px;
             color: white;
-            padding: 10px 15px;
-            text-decoration: none;
+            background-color: #45a049;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
+            justify-content: center;
         }
 
-        /* Responsive cards */
-        @media screen and (max-width: 768px) {
-            .card-container {
-                flex-direction: column;
-                align-items: center;
+        .redirect-button:hover {
+            background-color: #388e3c;
+        }
+
+        /* Scrollable Pictures Section wrapping around the button */
+        .scroll-container {
+            display: flex;
+            justify-content: flex-start;
+            width: 100%;
+            height: 400px;
+            margin: 60px auto 20px;
+            /* Increase margin-top to 60px or higher */
+            position: relative;
+            padding: 20px;
+            overflow: hidden;
+            /* Prevent overflow */
+        }
+
+        .scroll-container img {
+            width: 200px;
+            height: 150px;
+            margin: 10px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-top: 50px;
+        }
+
+        /* Scroll animation (horizontal scrolling on left and right) */
+        .scroll-horizontal {
+            display: flex;
+            animation: scroll-horizontal 10s linear infinite;
+        }
+
+        @keyframes scroll-horizontal {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-100%);
             }
         }
     </style>
 </head>
+
 <body>
 
-<!-- Navbar -->
-<div class="navbar">
-    <div class="logo"><a style="text-decoration: none; color: #fff;" href="home.html">Home</a></div>
-    <ul>
-        <li><a href="alert.html">Alert</a></li>
-        <li><a href="map.html">View Map</a></li>
-        <li><a href="api.html">Climate</a></li>
-        <li><a href="emergency.html">Contact</a></li>
-    </ul>
-    <div class="hamburger" onclick="toggleMenu()">
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
-</div>
+    <div class="navbar">
+        <div class="logo">Thrissur Disaster Responsive Hub</div>
+        <ul>
+            <li>
+                <a href="alert.html">
+                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span class="sr-only">Alert</span> <!-- Screen reader text -->
+                    Alert
+                </a>
+            </li>
+            <li>
+                <a href="map.html">
+                    <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
+                    <span class="sr-only">View Map</span>
+                    View Map
+                </a>
+            </li>
+            <li>
+                <a href="api.html">
+                    <i class="fas fa-cloud-sun" aria-hidden="true"></i>
+                    <span class="sr-only">Climate</span>
+                    Climate
+                </a>
+            </li>
+            <li>
+                <a href="emergency.html">
+                    <i class="fas fa-phone-alt" aria-hidden="true"></i>
+                    <span class="sr-only">Contact</span>
+                    Contact
+                </a>
+            </li>
+        </ul>
 
-<!-- Fullscreen background section with card layout -->
-<div class="fullscreen-bg">
-    <div class="card-container">
-        <div class="card">
-            <img src="istockphoto-1671131571-612x612.webp" >
-            <div class="card-content">
-                <h3>Emergency Help</h3>
-                <p>please click this button to view emergency support</p>
-                <a href="emergency.html" class="btn">Support</a>
-            </div>
-        </div>
 
-        <div class="card">
-            <img src="istockphoto-1684711078-612x612.webp" >
-            <div class="card-content">
-                <h3>Weather</h3>
-                <p>please click to view the current weather</p>
-                <a href="api.html" class="btn">View</a>
-            </div>
-        </div>
 
-        <div class="card">
-            <img src="road-gps-navigation-city-map-car-street-highway-roadmap-infographics-stock-vector-156915584.webp" >
-            <div class="card-content">
-                <h3>Navigation</h3>
-                <p>please press to start navigation</p>
-                <a href="map.html" class="btn">Start</a>
-            </div>
-        </div>
-
-        <div class="card">
-            <img src="istockphoto-1497485073-612x612.webp" >
-            <div class="card-content">
-                <h3>Flood Alert</h3>
-                <p>please click this button to check weather you are in a flood prone area</p>
-                <a href="alert.html" class="btn">Check</a>
-            </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
     </div>
-</div>
 
-<script>
-    function toggleMenu() {
-        const navbarLinks = document.querySelector('.navbar ul');
-        navbarLinks.classList.toggle('active');
-    }
-</script>
+    <div class="content">
+        <!-- Scrollable Pictures Section wrapping around the button -->
+        <div class="scroll-container">
+            <div class="scroll-horizontal">
+                <img src="360_F_679607829_JW8K4tVMWdivIknG0EEk1xHrsoPTxgoq.jpg" alt="Image 1">
+                <img src="1551343019_7d5f1fefbaed323d31779a9d5ff248a5.avif" alt="Image 2">
+                <img src="Caparisoned_elephants_and_energetic_crowd_at_Thrissur_Pooram_celebrations_2649.jpg"
+                    alt="Image 4">
+                <img src="istockphoto-1137754117-612x612.jpg" alt="Image 5">
+                <img src="2020-10-17 (1).jpg" alt="Image 6">
+                <img src="GettyImages-170964849 1.jpg" alt="Image 7">
+            </div>
+        </div>
 
-
-
-<!--for speak to text facility -->
-<div class="container">
-    <!-- Existing content like map and alert info -->
-    
-    <!-- Speech to Text Section -->
-    <div id="speechToText" style="margin-top: 20px; text-align: center;">
-        <button id="startRecognition" style="padding: 10px 20px; font-size: 16px;">🎙️ Start Speaking</button>
-        <div id="transcription" style="margin-top: 20px; font-size: 18px; color: #333;"></div>
+        <!-- Button Section (In the center, scrollable images around it) -->
+        <div class="button-container">
+            <button class="redirect-button" onclick="window.location.href='home.html'">Services</button>
+        </div>
     </div>
-</div>
- 
-<script>
-    // Check if the browser supports the SpeechRecognition API
-    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    if ('SpeechRecognition' in window) {
-        // Create a new instance of SpeechRecognition
-        const recognition = new SpeechRecognition();
-        
-        // Set recognition parameters
-        recognition.lang = 'en-US'; // Set the language
-        recognition.interimResults = false; // Final results only
-        recognition.maxAlternatives = 1; // Only one result
-
-        // Reference to elements
-        const startButton = document.getElementById('startRecognition');
-        const transcription = document.getElementById('transcription');
-
-        // Event: Start recognition
-        startButton.addEventListener('click', () => {
-            recognition.start();
-            startButton.textContent = '🎙️ Listening...';
-        });
-
-        // Event: On recognition result
-        recognition.addEventListener('result', (event) => {
-            const transcript = event.results[0][0].transcript;
-            transcription.textContent = `You said: "${transcript}"`;
-            startButton.textContent = '🎙️ Start Speaking';
-        });
-
-        // Event: When recognition ends
-        recognition.addEventListener('end', () => {
-            startButton.textContent = '🎙️ Start Speaking';
-        });
-
-        // Event: Handle errors
-        recognition.addEventListener('error', (event) => {
-            console.error('Speech recognition error:', event.error);
-            transcription.textContent = 'Error recognizing speech. Please try again.';
-            startButton.textContent = '🎙️ Start Speaking';
-        });
-    } else {
-        // Inform the user if their browser does not support the API
-        document.getElementById('speechToText').textContent = 'Speech recognition is not supported in this browser.';
-    }
-</script>
-
+    <script>
+        // Function to toggle the mobile menu
+        function toggleMenu() {
+            const navbarUl = document.querySelector('.navbar ul');
+            navbarUl.classList.toggle('active');
+        }
+    </script>
 
 </body>
+
 </html>
 
 
